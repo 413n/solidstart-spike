@@ -1,17 +1,9 @@
-import { For } from "solid-js";
+import { For, Suspense } from "solid-js";
 import { useRouteData, createRouteData } from "solid-start";
 
 type Student = { name: string; house: string };
 
 export function routeData() {
-  // interface {
-  //     state: "pending";
-  //     loading: true;
-  //     error: undefined;
-  //     latest: undefined;
-  //     (): undefined;
-  // }
-
   return createRouteData(async () => {
     await new Promise((r) => setTimeout(r, 2000));
 
@@ -26,11 +18,12 @@ export function routeData() {
 
 export default function Page() {
   const students = useRouteData<typeof routeData>();
-  console.log("students", students);
 
   return (
-    <ul>
-      <For each={students()}>{(student) => <li>{student.name}</li>}</For>
-    </ul>
+    <Suspense fallback={<p class="text-blue-500">Loading...</p>}>
+      <ul>
+        <For each={students()}>{(student) => <li>{student.name}</li>}</For>
+      </ul>
+    </Suspense>
   );
 }
